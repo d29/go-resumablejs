@@ -45,6 +45,10 @@ func getChunkName(filename string, chunkNbr int) string {
 	return fmt.Sprintf("%s_part_%03d", filename, chunkNbr)
 }
 
+func serveFavicon(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "./static/fileserver.ico")
+}
+
 func serveHome(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "./static/home.html")
 }
@@ -335,6 +339,7 @@ func main() {
 	r.HandleFunc("/", serveHome).Methods("GET")
 	r.HandleFunc("/upload", resumable).Methods("GET")
 	r.HandleFunc("/upload", resumablePost).Methods("POST")
+	r.HandleFunc("/favicon.ico", serveFavicon).Methods("GET")
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
 
 	// Add the pprof routes
